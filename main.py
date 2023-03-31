@@ -9,7 +9,7 @@ import telegram
 '''
 
 
-phase = 0
+phase = 1
 
 def retrieveToken(filename):
     token = open(filename, 'r').read()
@@ -46,9 +46,11 @@ def handle_text(update, context):
     elif(phase == 4):
         message = text
         context.bot.send_message(chat_id = update.effective_chat.id, text=messageSentMessage)
-        text = "{} ha scritto a {} il messaggio -> {}".format(fromNumber, toNumber, message)
+        text = "il numero {} ha scritto al numero {} il messaggio -> {}".format(fromNumber, toNumber, message)
         write_to_channel(update, context, text)
         phase = 1
+        toNumber = 0
+        fromNumber = 0
 
 def start(update, context):
     global phase, initMessage
@@ -60,6 +62,14 @@ def asktoNumber(update, context):
     phase = 2
     print("Entrato")
     context.bot.send_message(chat_id=update.effective_chat.id, text=phase2Message)
+
+def annullaInvio(update, context):
+    global phase, fromNumber, toNumber
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Hai annullatto l'invio del messaggio !")
+    fromNumber = 0
+    toNumber = 0
+    phase = 1
+
 
 toNumber = 0
 fromNumber = 0
@@ -80,6 +90,7 @@ dispatcher = updater.dispatcher
 #dispatcher.add_handler(MessageHandler(Filters.text, handle_text))
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(CommandHandler("inviaunmessaggio", asktoNumber))
+dispatcher.add_handler(CommandHandler("annulla", annullaInvio))
 
 dispatcher.add_handler(MessageHandler(Filters.text, handle_text))
 
