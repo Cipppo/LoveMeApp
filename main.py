@@ -1,5 +1,9 @@
 from telegram.ext import * 
 import telegram
+import mysql.connector
+from mysql.connector import Error
+
+
 
 '''
 
@@ -7,6 +11,20 @@ import telegram
 1 - chiede se si vuole info o se si vuole mandare un messaggio 
 2 - chiede a che numero si vuole mandare il messaggio
 '''
+
+
+def mysql_connection():
+    try:
+        connection = mysql.connector.connect(host="localhost", 
+                                            database="lovify",
+                                            user="root",
+                                            password="")
+        if(connection.is_connected()):
+            print("Connected to MYSQL Server!")
+        return connection
+    except Error as e:
+        print("Error occured while connecting")
+    
 
 
 phase = 1
@@ -74,6 +92,8 @@ def annullaInvio(update, context):
 toNumber = 0
 fromNumber = 0
 message = ""
+
+db = mysql_connection()
 
 token = retrieveToken("token.txt")
 initMessage = open('initMessage.txt', 'r').read()
