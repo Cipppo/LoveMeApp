@@ -64,13 +64,6 @@ def handle_text(update, context):
             toNumber = int(text)
             phase = 3
     elif(phase == 3):
-        if(not text.isnumeric()):
-            context.bot.send_message(chat_id = update.effective_chat.id, text=notintMessage)
-        else:
-            context.bot.send_message(chat_id = update.effective_chat.id, text=fromAcceptedMessage)
-            fromNumber = int(text)
-            phase = 4
-    elif(phase == 4):
         message = text
         if(filter(message) == False):
             warn = "⛔ Hai usato una parola non ammessa, per favore riscrivi il messaggio ! ⛔"
@@ -83,7 +76,7 @@ def handle_text(update, context):
 # {}
 #             '''.format(toNumber, message)
 #             write_to_channel(update, context, text)
-            fromNumber = update.message.from_user.first_name
+            fromNumber = update.message.chat.id
             saveMessage(toNumber, fromNumber, message)
             phase = 1
             toNumber = 0
@@ -146,21 +139,6 @@ def readFirstNonRead(id):
     record = (id,)
     cursor.execute(query, record)
     db.commit()
-    
-
-def startVisualizer():
-    global message_delay
-    while(True):
-        firstNonRead = getFirstNonRead()
-        if(firstNonRead != []):
-            firstNonRead = firstNonRead[0]
-            print(firstNonRead)
-            nonReadid = firstNonRead[0]
-            nonReadReceiver = firstNonRead[1]
-            nonReadText = firstNonRead[2]
-            print("il numero {} riceve {}".format(nonReadReceiver, nonReadText))
-            readFirstNonRead(nonReadid)
-        sleep(message_delay)
 
 
 
@@ -199,4 +177,4 @@ dispatcher.add_handler(MessageHandler(Filters.text, handle_text))
 print("LOG ====> Startin the bot")
 updater.start_polling(1.0)
 
-visualizerThread = Thread(target=startVisualizer).start()
+
