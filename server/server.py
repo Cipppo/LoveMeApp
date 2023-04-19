@@ -29,15 +29,38 @@ CORS(app)
 id = 1
 
 def getMessageById():
-    global db, id
+    global id
+
+    db = mysql.connector.connect(host="localhost", 
+                        database="lovify",
+                        user="root",
+                        password="root")
 
     cursor = db.cursor()
     query = "SELECT * FROM messaggi WHERE id=%s"
+    #print("Eseguo query: SELECT * FROM messaggi WHERE id = {}".format(id))
     record = (id,)
     cursor.execute(query, record)
     records = cursor.fetchall()
+    db.close()
     return records
 
+
+def showAll():
+
+
+    db = mysql.connector.connect(host="localhost", 
+                            database="lovify",
+                            user="root",
+                            password="root")
+
+    cursor = db.cursor()
+    query = "SELECT * FROM messaggi"
+    cursor.execute(query)
+    records = cursor.fetchall()
+    print(records)
+
+    db.close()
 
 
 #receiver2
@@ -47,19 +70,21 @@ def getMessageById():
 def showNext():
     global id 
     messaggio = getMessageById()
+    print("Cerco il numero {}".format(id))
+    #showAll()
     if(messaggio != []):
         data = {
             "Receiver" : messaggio[0][2],
             "Message" : messaggio[0][3],
             "Status" : 1
         }
+        id = id + 1
     else:
         data = {
             "Receiver" : 0,
             "Message" : 0,
             "Status" : 0
         }
-    id = id + 1
     return data
 
 
