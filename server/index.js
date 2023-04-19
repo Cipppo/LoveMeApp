@@ -16,10 +16,11 @@ function retrieveMessage(){
         if(result.data["Status"] == 1){
             let receiver = result.data["Receiver"];
             let text = result.data["Message"];
-            container.innerHTML = `Il numero ${receiver} ha ricevuto: ${text}`;
+            container.innerHTML = `Il numero ${receiver} riceve: ${text}`;
         }else{
-            container.innerHTML = "SONO FINITI I MESSAGGI";
+            container.innerHTML = `<img src="iGen.png">`;
         }
+        console.log(result.data["Status"]);
     });
 }
 
